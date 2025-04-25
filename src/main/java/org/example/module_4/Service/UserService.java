@@ -1,5 +1,6 @@
 package org.example.module_4.Service;
 
+import jakarta.persistence.EntityExistsException;
 import org.example.module_4.DTO.UserForm;
 import org.example.module_4.Entity.User;
 import org.example.module_4.Repository.UserRepo;
@@ -31,17 +32,22 @@ public class UserService {
     public List<User> getAllUsers() {
         return userRepo.findAll();
     }
+
     public User getUserById(int id) {
         return userRepo.findById(id).orElseThrow();
     }
+
     public void deleteUserById(int id) {
         userRepo.deleteById(id);
     }
-    public void deleteUser(User user) {
-        userRepo.delete(user);
-    }
-    public void updateUser(UserForm user) {
 
+    public User updateUser(UserForm userForm, int id) {
+        User user = userRepo.findById(id).orElseThrow(
+                () -> new EntityExistsException("Пользователь не найден"));
+        user.setName(userForm.getName());
+        user.setEmail(userForm.getEmail());
+        user.setAge(userForm.getAge());
+        return userRepo.save(user);
     }
 }
 

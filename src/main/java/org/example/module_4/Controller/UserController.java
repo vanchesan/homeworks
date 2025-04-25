@@ -21,8 +21,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserRepo userRepo;
-    private final ObjectMapper objectMapper;
     private final UserService userService;
 
     @PostMapping( "/api/add")
@@ -46,6 +44,8 @@ public class UserController {
         userService.deleteUserById(id);
     }
 
-
-
+    @PutMapping("api/{id}")
+    public void updateUser(@RequestBody UserForm user, @PathVariable int id) {
+        userService.updateUser(user, id);
+    }
 }
