@@ -1,6 +1,7 @@
 package org.example.module_4.Service;
 
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.example.module_4.DTO.UserForm;
 import org.example.module_4.Entity.User;
 import org.example.module_4.Repository.UserRepo;
@@ -43,7 +44,7 @@ public class UserService {
 
     public User updateUser(UserForm userForm, int id) {
         User user = userRepo.findById(id).orElseThrow(
-                () -> new EntityExistsException("Пользователь не найден"));
+                () -> new EntityNotFoundException("Пользователь не найден"));
         user.setName(userForm.getName());
         user.setEmail(userForm.getEmail());
         user.setAge(userForm.getAge());
