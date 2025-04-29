@@ -1,6 +1,5 @@
 package org.example.module_4.Service;
 
-import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.example.module_4.DTO.UserForm;
 import org.example.module_4.Entity.User;
