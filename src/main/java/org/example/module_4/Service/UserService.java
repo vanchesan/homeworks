@@ -1,23 +1,25 @@
 package org.example.module_4.Service;
 
 import jakarta.persistence.EntityNotFoundException;
+
+import lombok.RequiredArgsConstructor;
 import org.example.module_4.DTO.UserForm;
 import org.example.module_4.Entity.User;
 import org.example.module_4.Repository.UserRepo;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepo userRepo;
 
+    private final KafkaProducerService kafkaProducerService;
 
-    public UserService(UserRepo userRepo) {
-        this.userRepo = userRepo;
-    }
 
     public void addUser(UserForm user) {
         User newUser = User.builder()
@@ -27,6 +29,7 @@ public class UserService {
                 .created_at(LocalDate.now())
                 .build();
         userRepo.save(newUser);
+        kafkaProducerService.send("CREATE", user);
     }
 
     public List<User> getAllUsers() {
@@ -38,7 +41,15 @@ public class UserService {
     }
 
     public void deleteUserById(int id) {
+        User user = userRepo.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Пользователь не найден"));
         userRepo.deleteById(id);
+        UserForm userForm = UserForm.builder()
+                .name(user.getName())
+                .email(user.getEmail())
+                .age(user.getAge())
+                .build();
+        kafkaProducerService.send("DELETE", userForm);
     }
 
     public User updateUser(UserForm userForm, int id) {
