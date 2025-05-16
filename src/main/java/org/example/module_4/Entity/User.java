@@ -25,6 +25,7 @@ public class User {
     @Size(min = 2, max = 50, message = "Имя может содержить от 2 до 50 симвлов")
     @Column(name = "name", nullable = false)
     private String name;
+    @NotBlank(message = "email не может быть пустым")
     @Email(message = "Неккоретный email1")
     @Column(name = "email", unique = true)
     private String email;
